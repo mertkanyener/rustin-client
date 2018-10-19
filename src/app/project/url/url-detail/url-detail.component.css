@@ -1,0 +1,12 @@
+.url-container {
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.fill-remaining-space {
+    flex: 1 1 auto;
+}
+
+button {
+    margin-bottom: 16px;
+}

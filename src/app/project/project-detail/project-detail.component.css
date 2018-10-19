@@ -1,0 +1,19 @@
+h3 {
+    margin-left: 20px;
+}
+
+h1 {
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+.fill-remaining-space {
+    flex: 1 1 auto;
+}
+
+h2 {
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 28px;
+    margin: 15px 0 25px;
+}

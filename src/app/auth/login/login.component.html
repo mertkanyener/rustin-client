@@ -1,0 +1,30 @@
+<div class="container" fxLayout="column">
+  <h1 class="mat-h1">User Login</h1>
+  <form (ngSubmit)="onLogin(f)" #f="ngForm">
+    <div class="container" fxLayout="column" class="custom-form">
+        <mat-form-field>
+            <input 
+              matInput
+              type="text"
+              ngModel
+              placeholder="Username"
+              id="username"
+              name="username"
+              >
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <input 
+              matInput
+              ngModel
+              type="password"
+              placeholder="Password"
+              id="password"
+              name="password">
+          </mat-form-field>
+          <br>
+          <button mat-raised-button color="primary" type="submit" style="max-width: 200px;">Login</button>
+    </div>
+    </form>
+</div>
+            

@@ -1,0 +1,82 @@
+<div class="container" fxLayout="column">
+    <h1 class="mat-h1">New User</h1>
+    <form (ngSubmit)="onRegister(f)" #f="ngForm">
+        <div class="container" fxLayout="column" class="custom-form">
+                <mat-form-field>
+                        <input
+                            matInput
+                            ngModel
+                            id="username"
+                            name="username"
+                            type="text"
+                            placeholder="Username"
+                            class="form-control"
+                            required
+                            minlength="3"
+                            maxlength="30"
+                            #username="ngModel"
+                            >
+                        <mat-error *ngIf="username.errors?.required"> * Username is required.</mat-error>
+                        <mat-error *ngIf="username.errors?.minlength"> * Username must be at least 3 characters.</mat-error>
+                        <mat-error *ngIf="username.errors?.maxlength">* Username is too long.</mat-error>
+                    </mat-form-field>
+            
+                    <mat-form-field>
+                        <input 
+                            matInput
+                            ngModel
+                            type="email"
+                            name="email"
+                            id="email"
+                            required
+                            placeholder="E-Mail Address"
+                            class="form-control"
+                            email
+                            #email="ngModel"
+                        >
+                        <mat-error *ngIf="email.errors?.required">* E-Mail is required.</mat-error>
+                        <mat-error *ngIf="email.errors?.email">* Please enter a valid e-mail address.</mat-error>
+                    </mat-form-field>
+           
+                    <mat-form-field>
+                        <input 
+                            matInput
+                            ngModel
+                            id="password"
+                            name="password"
+                            type="password"
+                            required
+                            minlength="6"
+                            placeholder="Password"
+                            class="form-control"
+                            #password="ngModel"
+                        >
+                        <mat-error *ngIf="password.errors?.required">* Password is required.</mat-error>
+                        <mat-error *ngIf="password.errors?.minlength">* Password must be at least 6 characters.</mat-error>
+                        <mat-error *ngIf="password.errors?.maxlength">* Password is too long.</mat-error>
+                    </mat-form-field>
+               
+                    <mat-form-field>
+                        <input 
+                            matInput
+                            ngModel
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            type="password"
+                            placeholder="Confirm Password"
+                            class="form-control"
+                            required
+                            #confirmPassword="ngModel"
+                        >
+                        <mat-error *ngIf="confirmPassword.errors?.required">* Password confirmation is required.</mat-error>
+                        <!-- <mat-error *ngIf="confirmPassword.errors?.notEqual">* Passwords do not match.</mat-error> -->
+                    </mat-form-field>
+                
+                    <button mat-raised-button color="primary" type="submit" style="max-width: 200px;">Create Account</button>
+            
+        </div>
+           
+    </form>
+</div>
+
+        

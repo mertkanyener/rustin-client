@@ -1,0 +1,10 @@
+<mat-list-item>
+  <mat-icon mat-list-icon>folder</mat-icon>
+  <a
+    [routerLink]="[index]"
+    routerLinkActive="active"
+    style="text-decoration: none;"  
+  >{{ project.name }}</a>
+  <button mat-icon-button [routerLink]="[project.id, 'edit']" id="editButton"><mat-icon>create</mat-icon></button>
+  <button mat-icon-button color="warn" (click)="onDelete(project.id)" id="deleteButton"><mat-icon>delete</mat-icon></button>
+</mat-list-item>

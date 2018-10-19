@@ -1,0 +1,33 @@
+<div class="container" fxLayout="column">
+    <header>
+        <div class="header-section">
+            <div class="container" color>
+                <h1 class="mat-h1">Mockup Server</h1>
+                <br>
+                <h2 class="mat-h2">Welcome!</h2>
+                <h2 class="mat-h2" *ngIf="!mainService.isAuthenticated();else welcome">Please sign in or sign up</h2>
+                <ng-template #welcome>
+                    <h2 class="mat-h2">Good to see you {{ mainService.username }}!</h2>
+                </ng-template>
+                <br>
+            </div>
+        </div>
+    </header>
+    <div class="container" fxFlexAlign="center center" style="margin-top:50px;">
+        <div class="container" fxLayout="row" fxLayoutAlign="center" fxLayoutGap="80px">
+            <div class="container"  *ngIf="!mainService.isAuthenticated(); then thenBlock else elseBlock"></div>
+            <ng-template #thenBlock>
+                <button mat-raised-button color="primary" routerLink="/login">Sign In</button>
+                <button mat-raised-button color="primary" routerLink="/register">Sign Up</button>
+            </ng-template>
+            <ng-template #elseBlock>
+                <button mat-raised-button color="primary" routerLink="/projects">Project List</button>
+                <button mat-raised-button color="primary" routerLink="/projects/new">New Project</button>
+            </ng-template>    
+        </div>        
+    </div>
+    <div class="container">
+        <h2 class="mat-h2" *ngIf="!mainService.isAuthenticated();else welcome">Hello Dear Guest! Please Login or Register</h2>
+    </div>
+    
+</div>

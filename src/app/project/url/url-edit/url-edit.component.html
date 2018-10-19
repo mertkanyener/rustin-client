@@ -1,0 +1,64 @@
+<div class="url-container" fxLayout="column">
+  <h1 class="mat-h1" >{{ editMode ? 'Update URL' : 'New URL' }}</h1>
+  <mat-divider></mat-divider>
+  <form (ngSubmit)="onSave()" [formGroup]="urlForm">
+    <div class="form-container" fxLayout="column">
+      <mat-form-field>
+          <input 
+            type="text"
+            matInput
+            id="path"
+            formControlName="path"
+            placeholder="URL Path"
+            class="form-control"
+            >
+      </mat-form-field>
+      <br>
+      <br>
+      <div class="container" fxLayout="row" fxLayoutGap="20px">
+          <mat-form-field>
+              <mat-select
+                placeholder="Select Method"
+                id="method"
+                formControlName="method"
+              >
+                <mat-option *ngFor="let method of methods" [value]="method">
+                  {{ method }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-select
+                placeholder="Select Response Code"
+                id="responseCode"
+                formControlName="responseCode"
+              >
+                <mat-option *ngFor="let code of responseCodes" [value]="code">
+                  {{ code }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>        
+      </div>
+    </div>
+    <br>
+    <div *ngIf="editMode; then thenBlock else elseBlock"></div>
+    <ng-template #thenBlock>
+      <json-editor
+        [data]= "jsonData"
+        [options]="options"
+        ></json-editor>
+    </ng-template>
+    <ng-template #elseBlock>
+      <json-editor
+        [options]="options"
+      ></json-editor>
+    </ng-template>
+      <mat-divider></mat-divider>
+    <div class="button-row" fxLayout="row" fxLayoutGap="10px">
+        <button mat-raised-button color="primary" type="submit">Save</button>
+        <button mat-raised-button color="accent" type="button" (click)="onClear()">Clear</button>
+        <button mat-raised-button color="warn"  type="button" (click)="onCancel()">Cancel</button>
+    </div>
+  </form>
+    
+</div>

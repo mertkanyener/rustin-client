@@ -1,0 +1,23 @@
+.url-container {
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+.button-row {
+    margin-left: 10px;
+    margin-top: 20px;
+}
+
+.cust-container {
+    margin-top: 20px;
+}
+
+.form-container {
+    margin-top: 20px;
+}
+
+textarea {
+    min-width: 600px;
+    min-height: 200px;
+}
+

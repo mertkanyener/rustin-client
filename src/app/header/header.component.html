@@ -1,0 +1,10 @@
+<mat-toolbar color="primary" class="mat-elevation-z6">
+  <a mat-button routerLink="/"><h1 class="mat-h1">Mockup Server</h1></a>
+  <a mat-button routerLink="/projects" *ngIf="mainService.isAuthenticated()">Projects</a>
+  <span class="fill-remaining-space"></span>
+  <ng-template [ngIf]="!mainService.isAuthenticated()">
+    <a mat-button routerLink="/register"><h4 class="mat-subheading-1">Register</h4></a>
+    <a mat-button routerLink="/login"><h4 class="mat-subheading-1">Login</h4></a>
+  </ng-template>
+  <a mat-button (click)="onLogout()" *ngIf="mainService.isAuthenticated()"><h4 class="mat-subheading-1">Logout</h4></a>  
+</mat-toolbar>
