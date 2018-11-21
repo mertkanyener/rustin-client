@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MainService } from '../shared/main.service';
 import { Router } from '@angular/router';
 
@@ -7,14 +7,10 @@ import { Router } from '@angular/router';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
 
   constructor(private mainService: MainService,
               private router: Router) { }
-
-  ngOnInit() {
-  }
-
   onLogout(){
     this.mainService.logout();
     this.router.navigate(['']);

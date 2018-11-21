@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Project } from '../../shared/project.model';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ProjectService } from '../project.service';
 import { MainService } from 'src/app/shared/main.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-project-edit',
@@ -17,6 +18,8 @@ export class ProjectEditComponent implements OnInit {
   editMode = false;
   project: Project = new Project();
   maxId: number;
+  statusOptions = ['Active', 'Inactive'];
+  fb = new FormBuilder();
 
 
   constructor(private projectService: ProjectService,
@@ -48,7 +51,7 @@ export class ProjectEditComponent implements OnInit {
   private initForm() {
     let projectName = '';
     let projectDescription = '';
-    let projectStatus = '';
+    let projectStatus = 'Active';
 
     if (this.editMode) {
       this.projectOld = this.projectService.getProjects().find(x => x.id === this.id);
@@ -56,15 +59,15 @@ export class ProjectEditComponent implements OnInit {
       projectDescription = this.projectOld.description;
       projectStatus = this.projectOld.status;
     }
-    this.projectForm = new FormGroup({
-      'name' : new FormControl(projectName),
-      'description' : new FormControl(projectDescription),
-      'status' : new FormControl(projectStatus),
+    this.projectForm = this.fb.group({
+      name: [projectName, [Validators.required, Validators.minLength(3), Validators.maxLength(30), Validators.pattern('[a-zA-Z0-9]*')], this.projectNameValidator.bind(this)],
+      description : [projectDescription],
+      status: [projectStatus, [Validators.required]]
     });
+
   }
 
   onSave() {
-    console.log("save clicked: ", this.editMode);
     const formValue = this.projectForm.value;
     this.project.name = formValue.name;
     this.project.description = formValue.description;
@@ -72,10 +75,8 @@ export class ProjectEditComponent implements OnInit {
     this.project.id = this.maxId + 1;
     if (this.editMode) {
       this.mainService.updateProject(this.id, this.project);
-      //this.dbService.getAllProjects();
     } else {
       this.mainService.addNewProject(this.project);
-      //this.dbService.getAllProjects();
     }
     this.router.navigate(['projects']);
   }
@@ -87,6 +88,18 @@ export class ProjectEditComponent implements OnInit {
   onCancel() {
     this.router.navigate(['projects']);
   }
+
+  projectNameValidator(c: AbstractControl): Promise<ValidationErrors> | Observable<ValidationErrors>{
+    let promise = new Promise<any>((resolve, reject) => {
+      if (this.projectService.getProjects().find(x => x.name === c.value) != null){
+        console.log("Result: ",this.projectService.getProjects().find(x => x.name === c.value))
+        resolve({'projectExists': true});
+      }else{
+        resolve(null);
+      }
+    });
+    return promise;
+    }
 
   
 

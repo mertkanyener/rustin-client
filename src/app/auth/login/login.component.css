@@ -1,7 +1,5 @@
 
 .custom-form {
-  min-width: 250px;
-  max-width: 500px;
   width: 100%;
   margin-left: 20px;
   margin-top: 20px;
@@ -13,5 +11,9 @@ h1 {
 }
 
 mat-form-field {
-  width: 500px;
+  width: 20rem;
+}
+
+button {
+  width: 150px;
 }

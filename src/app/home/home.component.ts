@@ -1,24 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { MainService } from '../shared/main.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent {
 
-  constructor(private mainService: MainService) { }
+  constructor(private mainService: MainService,
+              private router: Router) { }
 
-  ngOnInit() {
-    if (this.mainService.isAuthenticated()) {
-      let token = this.mainService.getToken();
-      console.log("Acess Token: ", token.access_token);
-      console.log("User Id: " ,token.userId);
-      console.log("Token type: ", token.token_type)
-      console.log("Scope", token.scope);
-
-    }
+  onProjectList(){
+    this.mainService.getAllProjects();
+    this.router.navigate(['/projects']);
   }
-
 }

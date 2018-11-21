@@ -13,7 +13,6 @@ import { MaterialModule } from './material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MainService } from './shared/main.service';
 import { HttpClientModule } from '@angular/common/http';
-import { ConfirmPassowrdDirective } from './auth/confirm-password.directive';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { FooterComponent } from './footer/footer.component';
 import { ProjectService } from './project/project.service';
@@ -26,7 +25,6 @@ import { UrlService } from './project/url/url.service';
     HomeComponent,
     LoginComponent,
     RegisterComponent,
-    ConfirmPassowrdDirective,
     SidebarComponent,
     FooterComponent
   ],

@@ -1,30 +1,44 @@
-<div class="container" fxLayout="column">
-  <h1 class="mat-h1">User Login</h1>
-  <form (ngSubmit)="onLogin(f)" #f="ngForm">
-    <div class="container" fxLayout="column" class="custom-form">
-        <mat-form-field>
-            <input 
-              matInput
-              type="text"
-              ngModel
-              placeholder="Username"
-              id="username"
-              name="username"
-              >
-          </mat-form-field>
-          <br>
-          <mat-form-field>
-            <input 
-              matInput
-              ngModel
-              type="password"
-              placeholder="Password"
-              id="password"
-              name="password">
-          </mat-form-field>
-          <br>
-          <button mat-raised-button color="primary" type="submit" style="max-width: 200px;">Login</button>
-    </div>
-    </form>
+<div *ngIf="mainService.showSpinner;else elseBlock" class="container" fxLayout="column" fxFill fxLayoutAlign="center center">
+  <mat-spinner style="margin: auto; margin-top: 10rem;"></mat-spinner>
 </div>
-            
+<ng-template #elseBlock>
+  <div class="container" fxLayout="column" fxLayoutAlign="center center">
+    <h1 class="mat-h1">User Login</h1>
+    <form (ngSubmit)="onLogin(f)" #f="ngForm">
+      <div class="container" fxLayout="column" class="custom-form">
+        <mat-form-field>
+          <input
+            matInput
+            required
+            type="text"
+            autocomplete="username"
+            ngModel
+            placeholder="Username"
+            id="username"
+            name="username">
+          <mat-error *ngIf="f.hasError('required', 'username')">* Username is required.</mat-error>
+        </mat-form-field>
+        <br>
+        <mat-form-field>
+          <input
+            matInput
+            required
+            ngModel
+            autocomplete="current-password"
+            type="password"
+            placeholder="Password"
+            id="password"
+            name="password">
+          <mat-error *ngIf="f.hasError('required', 'password')">* Password is required.</mat-error>
+        </mat-form-field>
+        <mat-error *ngIf="loginClicked && loginStatus === 400">* Username or password is wrong!</mat-error>
+        <br>
+        <div class="container" fxLayout="row" fxLayoutGap="20px">
+          <button mat-raised-button color="primary" type="submit" [disabled]="!f.valid">Login</button>
+          <button mat-raised-button color="warn" type="button" (click)="onCancel()">Cancel</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-template>
+

@@ -10,8 +10,11 @@
         id="name"
         formControlName="name"
         placeholder="Project Name"
-        class="form-control"
-        >
+        class="form-control">
+        <mat-error *ngIf="projectForm.hasError('required', 'name')">* Project name is required.</mat-error>
+        <mat-error *ngIf="projectForm.hasError('minlength', 'name')">* Project name must be at least 3 characters long.</mat-error>
+        <mat-error *ngIf="projectForm.hasError('maxlength', 'name')">* Project name is too long.</mat-error>
+        <mat-error *ngIf="projectForm.hasError('projectExists', 'name')">* A project with same name exists.</mat-error>
     </mat-form-field>
     <br>
     <br>
@@ -26,17 +29,19 @@
     <br>
     <br>
     <mat-form-field>
-      <input 
-        matInput
-        type="text" 
-        formControlName="status" 
-        id="status"
+      <mat-select
         placeholder="Project Status"
-        class="form-control">
+        id="status"
+        formControlName="status">
+        <mat-option *ngFor="let status of statusOptions" [value]="status">
+          {{ status }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="projectForm.hasError('required', 'status')">* Status is required.</mat-error>
     </mat-form-field>
-    <mat-divider></mat-divider>
+    <br>
     <div class="button-row" fxLayout="row" fxLayoutGap="20px">
-        <button mat-raised-button color="primary" type="submit">Save</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="!projectForm.valid">Save</button>
         <button mat-raised-button color="accent" type="button" (click)="onClear()">Clear</button>
         <button mat-raised-button color="warn" type="button" (click)="onCancel()">Cancel</button>
       </div>

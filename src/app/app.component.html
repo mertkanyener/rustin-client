@@ -2,14 +2,15 @@
   <div class="container" fxFill style="position:sticky;">
     <app-header></app-header>    
   </div>
-  <div class="container" fxLayout="row">
+  <router-outlet></router-outlet>
+  <!--<div class="container" fxLayout="row">
       <div class="sidebar-container" fxFlex="10" *ngIf="mainService.isAuthenticated()">
         <app-sidebar></app-sidebar>
       </div>
       <div class="container" fxFlex>
           <router-outlet></router-outlet>
       </div>
-    </div>
+    </div>-->
 </div>
 
 

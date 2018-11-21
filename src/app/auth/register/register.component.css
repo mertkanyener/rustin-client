@@ -20,3 +20,7 @@ h1 {
 mat-form-field {
     width: 500px;
 }
+
+button {
+    width: 150px;
+}

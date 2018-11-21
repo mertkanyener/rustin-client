@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { MainService } from './shared/main.service';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +11,4 @@ export class AppComponent {
 
   constructor(private mainService: MainService) { 
   }
-
-
 }

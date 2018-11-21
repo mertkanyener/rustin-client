@@ -1,0 +1,34 @@
+<h2 mat-dialog-title>Faker Library</h2>
+<mat-dialog-content class="mat-typography">
+  <mat-form-field>
+    <input type="text" placeholder="Filter" matInput (keyup)="applyFilter($event.target.value)">
+  </mat-form-field>
+  <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Name</th>
+      <td mat-cell *matCellDef="let category"><b>{{ category.name }}</b></td>
+    </ng-container>
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let category" [attr.colspan]="displayColumns.length">
+        <div fxLayout="column" fxLayoutGap="10px" [@detailExpand]="category == expandedCategory ? 'expanded' : 'collapsed'" style="overflow:hidden;">
+          <br>
+          <p>Choose the type of the random value to be generated:</p>
+          <button mat-button color="primary" *ngFor="let subCategory of category.subCategories" (click)="onClick(category.name, subCategory)">{{ subCategory }}</button>
+        </div>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+    <tr mat-row *matRowDef="let category; columns: displayColumns;"
+        (click)="expandedCategory = category"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" style="height:0;"></tr>
+  </table>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <div class="container" fxLayout="row" fxLayoutGap="10px">
+    <ng-template *ngIf="optionChosen">
+      <p>Your selection: {{ result }}</p>
+    </ng-template>
+    <button mat-flat-button color="primary" [mat-dialog-close]="data.choice" cdkFocusInitial>Ok</button>
+    <button mat-flat-button color="warn" mat-dialog-close>Cancel</button>
+  </div>
+</mat-dialog-actions>

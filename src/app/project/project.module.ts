@@ -13,11 +13,11 @@ import { UrlDetailComponent } from "./url/url-detail/url-detail.component";
 import { UrlEditComponent } from "./url/url-edit/url-edit.component";
 import { UrlListComponent } from "./url/url-list/url-list.component";
 import { ProjectRoutingModule } from "./project-routing.module";
-import { ProjectService } from "./project.service";
-import { UrlService } from "./url/url.service";
 import { NgJsonEditorModule } from "ang-jsoneditor";
 import { NgxJsonViewerModule} from "ngx-json-viewer";
-import { MainService } from "../shared/main.service";
+import { TextInputAutocompleteModule } from 'angular-text-input-autocomplete';
+import { FakerDialogComponent } from './url/url-edit/faker-dialog/faker-dialog.component';
+import { ProjectStartComponent } from './project-start/project-start.component';
 
 @NgModule({
     declarations: [
@@ -29,7 +29,9 @@ import { MainService } from "../shared/main.service";
         UrlComponent,
         UrlDetailComponent,
         UrlEditComponent,
-        UrlListComponent
+        UrlListComponent,
+        FakerDialogComponent,
+        ProjectStartComponent
     ],
     imports: [
         CommonModule,
@@ -39,10 +41,10 @@ import { MainService } from "../shared/main.service";
         ReactiveFormsModule,
         ProjectRoutingModule,
         NgJsonEditorModule,
-        NgxJsonViewerModule
+        NgxJsonViewerModule,
+        TextInputAutocompleteModule
     ],
-    providers: [
-    ]
+    entryComponents: [FakerDialogComponent]
 })
 
 export class ProjectModule {

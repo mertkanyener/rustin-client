@@ -1,22 +1,28 @@
 <div class="container" fxLayout="column" >
-    <div class="container" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+    <div class="top-container" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
         <h1 class="mat-h1" fxFlexAlign="start"><b>{{ project.name }}</b></h1>
-        <mat-slide-toggle 
-            [(ngModel)]="checked"
-            (change)="onToggle()"    
-        >
-            {{ checked ? 'Stop Project' : 'Start Project' }}
-        </mat-slide-toggle>
         <span class="fill-remaining-space"></span>
         <button mat-raised-button color="primary" [routerLink]="['urls', 'new']">New Url</button>
         <button mat-raised-button color="accent" routerLink="edit" routerLinkActive>Edit Project</button>
+        <button mat-raised-button color="warn" routerLink="../" routerLinkActive>Back</button>
     </div>
     <mat-divider></mat-divider>
     <h3 class="mat-subheading-2"><b>Description:</b>  {{ project.description }} </h3>
-    <mat-divider></mat-divider>
-    <h3 class="mat-subheading-2"><b>Status:</b> {{ project.status }} </h3>
+    <div class="container" fxLayout="row" fxLayoutGap="10px">
+        <h3 class="mat-subheading-2"><b>Status:</b> {{ project.status }} </h3>
+        <mat-slide-toggle 
+            [(ngModel)]="checked"
+            (change)="onToggle()">
+            {{ checked ? 'Stop Project' : 'Start Project' }}
+        </mat-slide-toggle>
+    </div>
     <mat-divider></mat-divider>
     <h2 class="mat-h2" fxFlexAlign="center" style="margin-top:20px;"><b>URLs</b></h2>
-    <app-url-list
+    <div *ngIf="mainService.showSpinner;else elseBlock" fxFlexAlign=" center">
+        <mat-spinner></mat-spinner>
+    </div>
+    <ng-template #elseBlock>
+        <app-url-list
         [urls]="urls"></app-url-list>
+    </ng-template>      
 </div>

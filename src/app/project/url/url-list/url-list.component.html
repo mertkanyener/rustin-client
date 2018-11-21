@@ -1,5 +1,14 @@
-<div class="container" fxLayout="column" style="background-color: #e8eaf6" >
-  <table mat-table [dataSource]="urls" >
+<div class="container" fxLayout="column">
+  <div class="container" fxLayout="row" fxFill>
+    <mat-form-field fxFlex="40">
+      <input
+        type="text"
+        placeholder="Search URL by path"
+        matInput
+        (keyup)="applyFilter($event.target.value)">
+    </mat-form-field>
+  </div>
+  <table mat-table [dataSource]="dataSource" >
     <ng-container matColumnDef="path">
         <th mat-header-cell *matHeaderCellDef>Path</th>
         <td mat-cell *matCellDef="let url"><a [routerLink]="['urls', url.id]" routerLinkActive="active" style="text-decoration: none;">{{ url.path }}</a></td>

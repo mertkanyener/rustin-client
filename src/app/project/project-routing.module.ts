@@ -20,14 +20,12 @@ const projectRoutes : Routes = [
         { path: ':projectId/urls/:urlId', component: UrlDetailComponent, pathMatch: 'full' },
         { path: ':projectId/urls/:urlId/edit', component: UrlEditComponent }
     ] }
-]
+];
 
 @NgModule({
     imports: [
         RouterModule.forChild(projectRoutes)
     ],
     exports: [RouterModule]
-    
 })
-
 export class ProjectRoutingModule { }

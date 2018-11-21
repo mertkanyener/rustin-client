@@ -1,0 +1,11 @@
+table {
+    width: 100%;
+    width: 760px;
+    min-width: 760px;
+    max-width: 760px;
+}
+
+mat-form-field {
+    width: 100%;
+}
+
