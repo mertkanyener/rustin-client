@@ -94,7 +94,7 @@ export class FakerDialogComponent implements OnInit {
   }
 
   onClick(category: string, subCategory: string) {
-    this.result = (category + "." + subCategory).replace(" ", "").toLowerCase();
+    this.result = (category + "." + subCategory).replace(/-/g,'').replace(/ /g, '').toLowerCase();
     this.data.choice = this.result;
   }
 

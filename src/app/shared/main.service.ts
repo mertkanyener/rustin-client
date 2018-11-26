@@ -154,7 +154,7 @@ export class MainService {
 
     getAllProjects() {
         this.showLoadingSpinner();
-        this.httpClient.get<Project[]>('http://localhost:8080/admin/projects', this.httpOptions).subscribe(
+        this.httpClient.get<Project[]>('http://localhost:8080/resources/projects', this.httpOptions).subscribe(
             (projects: any) => {
                 this.projectService.setProjects(projects);
                 this.hideLoadingSpinner();
@@ -173,7 +173,7 @@ export class MainService {
     }
 
     getProjectMaxId() {
-        let path = 'http://localhost:8080/admin/projects/maxId';
+        let path = 'http://localhost:8080/resources/projects/maxId';
         this.httpClient.get<number>(path, this.httpOptions).subscribe(
             (maxId: any ) => {
                 this.projectService.setMaxId(maxId);
@@ -193,7 +193,7 @@ export class MainService {
     addNewProject(project: Project) {
         project.userId = this.token.userId;
         console.log(project);
-        this.httpClient.post('http://localhost:8080/admin/projects', project, this.httpOptions).subscribe(
+        this.httpClient.post('http://localhost:8080/resources/projects', project, this.httpOptions).subscribe(
             (res) => {
                 this.projectService.addProject(project);
             },
@@ -211,7 +211,7 @@ export class MainService {
 
     updateProject(id: number, project: Project) {
         project.userId = this.token.userId;
-        let path = 'http://localhost:8080/admin/projects/' + id;
+        let path = 'http://localhost:8080/resources/projects/' + id;
         this.httpClient.put(path, project, this.httpOptions).subscribe(
             (res) => {
                 this.projectService.updateProject(id, project);    
@@ -229,7 +229,7 @@ export class MainService {
     }
 
     deleteProject(id: number) {
-        let path = 'http://localhost:8080/admin/projects/' + id;
+        let path = 'http://localhost:8080/resources/projects/' + id;
         this.httpClient.delete(path, this.httpOptions).subscribe(
             (res) => {
                 this.projectService.deleteProject(id);
@@ -248,7 +248,7 @@ export class MainService {
     // "URL" Methods
 
     getUrlMaxId() {
-        let path = 'http://localhost:8080/admin/urls/maxId';
+        let path = 'http://localhost:8080/resources/urls/maxId';
         this.httpClient.get<number>(path, this.httpOptions).subscribe(
             (maxId : any) => {
                 this.urlService.setMaxId(maxId);
@@ -266,7 +266,7 @@ export class MainService {
 
     getAllUrls(projectId: number) {
         this.showLoadingSpinner();
-        let path = 'http://localhost:8080/admin/projects/' + projectId + "/urls";
+        let path = 'http://localhost:8080/resources/projects/' + projectId + "/urls";
         this.httpClient.get<UrlClass[]>(path, this.httpOptions).subscribe(
             (urls: any) => {
                 this.urlService.setUrls(urls);
@@ -287,7 +287,7 @@ export class MainService {
 
     addNewUrl(projectId: number, url: UrlClass) {
         console.log(url);
-        let path = 'http://localhost:8080/admin/projects/' + projectId + "/urls";
+        let path = 'http://localhost:8080/resources/projects/' + projectId + "/urls";
         this.httpClient.post(path, url, this.httpOptions).subscribe(
             (res) => {
                 this.urlService.addUrl(url);
@@ -305,7 +305,7 @@ export class MainService {
     }
 
     updateUrl(projectId: number, id: number, url: UrlClass) {
-        let path = 'http://localhost:8080/admin/projects/' + projectId + "/urls/" + id;
+        let path = 'http://localhost:8080/resources/projects/' + projectId + "/urls/" + id;
         this.httpClient.put(path, url, this.httpOptions).subscribe(
             (res) => {
                 this.urlService.updateUrl(id, url);
@@ -322,7 +322,7 @@ export class MainService {
     }
 
     deleteUrl(projectId: number, id: number) {
-        let path = 'http://localhost:8080/admin/projects/' + projectId + "/urls/" + id;
+        let path = 'http://localhost:8080/resources/projects/' + projectId + "/urls/" + id;
         this.httpClient.delete(path, this.httpOptions).subscribe(
             (res) => {
                 this.urlService.deleteUrl(id);
@@ -334,7 +334,8 @@ export class MainService {
                 retry(1);
               } else {
                 console.log("ERROR: ", error);
-              }            }
+              }
+            }
         )
     }
 

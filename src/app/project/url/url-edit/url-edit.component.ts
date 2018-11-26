@@ -88,7 +88,7 @@ export class UrlEditComponent implements OnInit {
       this.jsonData = JSON.parse(urlOld.response);
     }
     this.urlForm = new FormGroup({
-      'path' : new FormControl(urlPath, [Validators.required, Validators.pattern('[a-zA-Z/]*')]),
+      'path' : new FormControl(urlPath, [Validators.required, Validators.pattern('[a-zA-Z0-9/]*')]),
       'method' : new FormControl(urlMethod, [Validators.required]),
       'response' : new FormControl(urlResponse),
       'responseCode': new FormControl(responseCode, [Validators.required]),
