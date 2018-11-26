@@ -18,6 +18,7 @@ import { NgxJsonViewerModule} from "ngx-json-viewer";
 import { TextInputAutocompleteModule } from 'angular-text-input-autocomplete';
 import { FakerDialogComponent } from './url/url-edit/faker-dialog/faker-dialog.component';
 import { ProjectStartComponent } from './project-start/project-start.component';
+import { ErrorDialogComponent } from './url/url-edit/error-dialog/error-dialog.component';
 
 @NgModule({
     declarations: [
@@ -31,7 +32,8 @@ import { ProjectStartComponent } from './project-start/project-start.component';
         UrlEditComponent,
         UrlListComponent,
         FakerDialogComponent,
-        ProjectStartComponent
+        ProjectStartComponent,
+        ErrorDialogComponent
     ],
     imports: [
         CommonModule,
@@ -44,7 +46,7 @@ import { ProjectStartComponent } from './project-start/project-start.component';
         NgxJsonViewerModule,
         TextInputAutocompleteModule
     ],
-    entryComponents: [FakerDialogComponent]
+    entryComponents: [FakerDialogComponent,ErrorDialogComponent]
 })
 
 export class ProjectModule {

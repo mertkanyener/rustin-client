@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { UrlService } from '../url.service';
@@ -7,6 +7,7 @@ import { JsonEditorComponent, JsonEditorOptions } from 'ang-jsoneditor';
 import { MainService } from 'src/app/shared/main.service';
 import { MatDialog } from '@angular/material';
 import { FakerDialogComponent } from './faker-dialog/faker-dialog.component';
+import { ErrorDialogComponent } from './error-dialog/error-dialog.component';
 
 @Component({
   selector: 'app-url-edit',
@@ -29,7 +30,6 @@ export class UrlEditComponent implements OnInit {
   editMode = false;
   url: UrlClass = new UrlClass();
   jsonData = null;
-  editorData : string;
   choice: string;
   editorText: string;
   checked = false;
@@ -131,8 +131,14 @@ export class UrlEditComponent implements OnInit {
           this.choice = result;
           this.editorText = this.jsonEditor.getText();
           this.editorText = this.appendText(row, this.editorText, this.choice);
-          const json = JSON.parse(this.editorText || '{}');
-          this.jsonEditor.set(json);
+          try {
+            const json = JSON.parse(this.editorText || '{}');
+            this.jsonEditor.set(json);
+          }
+          catch (e) {
+            this.dialog.open(ErrorDialogComponent);
+            console.log("ERROR: ", e);
+          }
         });
       }
     }    

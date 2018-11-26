@@ -16,30 +16,6 @@
       </mat-form-field>
       <br>
       <br>
-      <!-- <div class="container" formArrayName="headers">
-        <div
-          fxLayout="row" 
-          class="container"
-          *ngFor="let headerCtrl of urlForm.get('headers').controls; let i = index"
-          [formGroupName]="i">
-          <mat-form-field>
-            <input 
-              type="text"
-              matInput
-              formControlName="key"
-              placeholder="Header key"
-              class="form-control">
-          </mat-form-field>
-          <mat-form-field>
-              <input 
-                type="text"
-                matInput
-                formControlName="value"
-                placeholder="Header value"
-                class="form-control">
-          </mat-form-field>
-        </div>
-      </div> -->
       <div class="container" fxLayout="row" fxLayoutGap="20px">
           <mat-form-field>
               <mat-select
@@ -79,6 +55,7 @@
               {{ checked ? 'Dynamic Response' : 'Static Response' }}
             </mat-slide-toggle>
       </div>
+      <h4 class="mat-h4" *ngIf="checked">*Press F3 to choose the value to be dynamically generated. It will be placed in the position of the editor caret.</h4>
     </div>
     <br>
     <div *ngIf="editMode; then thenBlock else elseBlock"></div>

@@ -13,7 +13,7 @@
         <div fxLayout="column" fxLayoutGap="10px" [@detailExpand]="category == expandedCategory ? 'expanded' : 'collapsed'" style="overflow:hidden;">
           <br>
           <p>Choose the type of the random value to be generated:</p>
-          <button mat-button color="primary" *ngFor="let subCategory of category.subCategories" (click)="onClick(category.name, subCategory)">{{ subCategory }}</button>
+          <button mat-button *ngFor="let subCategory of category.subCategories"   (click)="onClick(category.name, subCategory)">{{ subCategory }}</button>
         </div>
       </td>
     </ng-container>
@@ -23,11 +23,11 @@
     <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" style="height:0;"></tr>
   </table>
 </mat-dialog-content>
-<mat-dialog-actions align="end">
-  <div class="container" fxLayout="row" fxLayoutGap="10px">
-    <ng-template *ngIf="optionChosen">
-      <p>Your selection: {{ result }}</p>
-    </ng-template>
+<br>
+<mat-dialog-actions>
+  <div class="container" fxLayout="row" fxLayoutGap="10px" fxFill>
+    <h4 class="mat-h4">Your selection: <b>{{ data.choice }}</b></h4>
+    <span style="flex: 1 1 auto;"></span>
     <button mat-flat-button color="primary" [mat-dialog-close]="data.choice" cdkFocusInitial>Ok</button>
     <button mat-flat-button color="warn" mat-dialog-close>Cancel</button>
   </div>

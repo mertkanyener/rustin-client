@@ -1,13 +1,17 @@
 <div class="url-container" fxLayout="column" style="margin-top:20px;">
   <div class="container" fxLayout="row" fxLayoutGap="50px">
-    <h3 class="mat-subheading-2" ><b>URL Path: </b>{{ url.path }}</h3>
-    <h3 class="mat-subheading-2" ><b>Method: </b>{{ url.method }}</h3>
+    <h2 class="mat-h2" ><b>URL Path: </b>{{ url.path }}</h2>
     <span class="fill-remaining-space"></span>
-    <button mat-raised-button color="primary" routerLink="edit" routerLinkActive>Edit URL</button>
-    <button mat-raised-button color="accent" routerLink="../../" routerLinkActive>Back</button>
+    <div class="button-row" fxLayout="row" fxLayoutGap="10px">
+      <button mat-raised-button color="primary" routerLink="edit" routerLinkActive>Edit URL</button>
+      <button mat-raised-button color="accent" routerLink="../../" routerLinkActive>Back</button>
+    </div>
   </div>
   <mat-divider></mat-divider>
-  <h3 class="mat-subheading-2" style="margin-top:20px;"><b>Response Code: </b>{{ url.responseCode }}</h3>
+  <div class="container" fxLayout="row" fxLayoutGap="50px">
+    <h3 class="mat-subheading-2" style="margin-top:20px;"><b>Response Code: </b>{{ url.responseCode }}</h3>
+    <h3 class="mat-subheading-2" ><b>Method: </b>{{ url.method }}</h3>
+  </div>
   <h3 class="mat-subheading-2"><b>Response Body: </b></h3>
   <ngx-json-viewer [json]="jsonResponse"></ngx-json-viewer>
 </div>

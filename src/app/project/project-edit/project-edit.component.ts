@@ -92,7 +92,6 @@ export class ProjectEditComponent implements OnInit {
   projectNameValidator(c: AbstractControl): Promise<ValidationErrors> | Observable<ValidationErrors>{
     let promise = new Promise<any>((resolve, reject) => {
       if (this.projectService.getProjects().find(x => x.name === c.value) != null){
-        console.log("Result: ",this.projectService.getProjects().find(x => x.name === c.value))
         resolve({'projectExists': true});
       }else{
         resolve(null);

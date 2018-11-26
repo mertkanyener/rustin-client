@@ -10,3 +10,7 @@
 button {
     margin-bottom: 16px;
 }
+
+.button-row {
+  margin-right: 2rem;
+}

@@ -71,8 +71,7 @@ export class FakerDialogComponent implements OnInit {
   dataSource = new MatTableDataSource(TABLE_DATA);
   expandedCategory : Category;
   displayColumns = ['name'];
-  optionChosen = false;
-  result = "";
+  result = '';
 
   constructor(
     public dialogRef: MatDialogRef<FakerDialogComponent>,
@@ -80,6 +79,14 @@ export class FakerDialogComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.dataSource.filterPredicate = this.tableFilter();
+  }
+
+  tableFilter() : (data: any, filter:string) => boolean {
+    let filterFn = function (data, filter) {
+      return data.name.toLowerCase().trim().indexOf(filter) !== -1;
+    };
+    return filterFn;
   }
 
   applyFilter(value: string) {
@@ -89,7 +96,6 @@ export class FakerDialogComponent implements OnInit {
   onClick(category: string, subCategory: string) {
     this.result = (category + "." + subCategory).replace(" ", "").toLowerCase();
     this.data.choice = this.result;
-    this.optionChosen = true;
   }
 
 }

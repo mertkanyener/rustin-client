@@ -14,7 +14,7 @@
           (keyup)="applyFilter($event.target.value)">
       </mat-form-field>
       <span class="fill-remaining-space"></span>
-      <button mat-raised-button color="primary" routerLink="/projects/new">New Project</button>
+      <button id="newProject" mat-raised-button color="primary" routerLink="/projects/new">New Project</button>
     </div>
     <table id="nameHeader" mat-table [dataSource]="dataSource" fxFill style="margin-top: 20px;">
       <ng-container matColumnDef="name">

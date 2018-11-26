@@ -6,7 +6,8 @@ mat-form-field {
   flex: 1 1 auto;
 }
 
-button{
+#newProject {
   height: fit-content;
   margin-right: 2rem;
 }
+
