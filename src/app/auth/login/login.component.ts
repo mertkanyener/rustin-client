@@ -19,7 +19,6 @@ export class LoginComponent {
               private router: Router) { }
 
   onLogin(form: NgForm) {
-    this.loginClicked = true;
     const username = form.value.username;
     const password = form.value.password;
     this.mainService.loginUser(username, password);

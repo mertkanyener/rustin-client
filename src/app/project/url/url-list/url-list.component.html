@@ -8,17 +8,17 @@
         (keyup)="applyFilter($event.target.value)">
     </mat-form-field>
   </div>
-  <table mat-table [dataSource]="dataSource" >
+  <table mat-table matSort [dataSource]="dataSource" >
     <ng-container matColumnDef="path">
-        <th mat-header-cell *matHeaderCellDef>Path</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Path</th>
         <td mat-cell *matCellDef="let url"><a [routerLink]="['urls', url.id]" routerLinkActive="active" style="text-decoration: none;">{{ url.path }}</a></td>
     </ng-container>
     <ng-container matColumnDef="method">
-        <th mat-header-cell *matHeaderCellDef>Method</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Method</th>
         <td mat-cell *matCellDef="let url">{{ url.method }}</td>
     </ng-container>
     <ng-container matColumnDef="code">
-        <th mat-header-cell *matHeaderCellDef>Response Code</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Response Code</th>
         <td mat-cell *matCellDef="let url">{{ url.responseCode }}</td>
     </ng-container>
     <ng-container matColumnDef="edit">

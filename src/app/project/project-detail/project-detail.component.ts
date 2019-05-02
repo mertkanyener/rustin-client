@@ -26,10 +26,10 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
               private urlService: UrlService,
               private mainService: MainService,
               private router: Router ) {
-                this.projectList = this.projectService.getProjects();
                }
 
   ngOnInit() {
+    this.projectList = this.projectService.getProjects();
     this.activatedRoute.params.subscribe(
       (params: Params) => {
         this.id = +params['id'];

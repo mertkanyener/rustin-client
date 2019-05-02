@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
+import {Component, OnInit, OnDestroy, ViewChild, AfterViewInit, ElementRef} from '@angular/core';
 import { Project } from '../../shared/project.model';
 import { ProjectService } from '../project.service';
 import { Subscription } from 'rxjs';
@@ -12,24 +12,32 @@ import { MatSort, MatTableDataSource} from '@angular/material';
 })
 export class ProjectListComponent implements OnInit, OnDestroy {
   projects: Project[];
-  dataSource = new MatTableDataSource();
+  dataSource : MatTableDataSource<Project>;
   subscription: Subscription;
   displayedColumns: string[] = ['name', 'status', 'edit', 'delete'];
+  sort;
+  @ViewChild(MatSort) set content(content: ElementRef) {
+    this.sort = content;
+    if (this.sort){
+      this.dataSource.sort= this.sort;
+    }
+  }
 
   constructor(private projectService: ProjectService,
               private mainService: MainService) { }
 
   ngOnInit() {
+    this.projects = this.projectService.getProjects();
+    this.dataSource = new MatTableDataSource(this.projects);
+    this.dataSource.filterPredicate = this.tableFilter();
     this.subscription = this.projectService.projectsChanged.subscribe(
       (projects: Project[]) => {
         this.projects = projects;
-        this.dataSource.data = this.projects;
+        this.dataSource.data = projects;
         this.dataSource.filterPredicate = this.tableFilter();
+        this.dataSource.sort = this.sort;
       }
     );
-    this.projects = this.projectService.getProjects();
-    this.dataSource.data = this.projects;
-    this.dataSource.filterPredicate = this.tableFilter();
   }
 
   ngOnDestroy() {

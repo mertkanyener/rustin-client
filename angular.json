@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "project-client": {
+    "restin-client": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/project-client",
+            "outputPath": "dist/restin-client",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -54,18 +54,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "project-client:build"
+            "browserTarget": "restin-client:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "project-client:build:production"
+              "browserTarget": "restin-client:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "project-client:build"
+            "browserTarget": "restin-client:build"
           }
         },
         "test": {
@@ -100,7 +100,7 @@
         }
       }
     },
-    "project-client-e2e": {
+    "restin-client-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "architect": {
@@ -108,11 +108,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "project-client:serve"
+            "devServerTarget": "restin-client:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "project-client:serve:production"
+              "devServerTarget": "restin-client:serve:production"
             }
           }
         },
@@ -128,5 +128,5 @@
       }
     }
   },
-  "defaultProject": "project-client"
+  "defaultProject": "restin-client"
 }

@@ -1,0 +1,63 @@
+<h2 mat-dialog-title align="center">Pathfinder</h2>
+<mat-dialog-content class="mat-typography">
+  <div class="container" fxLayout="row">
+    <h4><b>Active Projects</b></h4>
+    <span style="flex: 1 1 auto"></span>
+    <mat-form-field fxFlexAlign="center">
+      <input type="text" placeholder="Enter Project Name" matInput (keyup)="applyFilter($event.target.value, 'projects')">
+    </mat-form-field>
+  </div>
+  <div class="table-container">
+    <table id="projectTable" mat-table #projectSort="matSort" matSort [dataSource]="dataSource">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Project Name</th>
+        <td mat-cell *matCellDef="let project">
+          <button mat-button (click)="onProjectClick(project)">{{ project.name }}</button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+      <tr mat-row *matRowDef="let project; columns: displayColumns;"></tr>
+    </table>
+  </div>
+  <div class="container" fxLayout="row">
+    <h4><b>URLs</b></h4>
+    <span class="fill-space"></span>
+    <mat-form-field fxFlexAlign="center">
+      <input type="text" placeholder="Enter URL Path" matInput (keyup)="applyFilter($event.target.value, 'url')">
+    </mat-form-field>
+  </div>
+  <div class="container" *ngIf="mainService.showSpinner;else elseBlock" fxFlexAlign=" center">
+    <mat-spinner></mat-spinner>
+  </div>
+  <ng-template #elseBlock>
+    <div class="table-container">
+      <table id="urlTable" mat-table #urlSort="matSort" matSort [dataSource]="dataSourceURL">
+        <ng-container matColumnDef="path">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Path</th>
+          <td mat-cell *matCellDef="let url">
+            <button mat-button (click)="onUrlClick(url)">{{ url.path }}</button>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="method">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Request Method</th>
+          <td mat-cell *matCellDef="let url">{{ url.method }}</td>
+        </ng-container>
+        <ng-container matColumnDef="code">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Response Code</th>
+          <td mat-cell *matCellDef="let url">{{ url.responseCode }}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayColumnsURL"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayColumnsURL"></tr>
+      </table>
+    </div>
+  </ng-template>
+</mat-dialog-content>
+<br>
+<mat-dialog-actions align="end">
+  <div class="container" fxLayout="row" fxLayoutGap="10px" fxFill>
+    <h4 class="mat-h4"><b>Full Path: </b> {{ data.fullPath }}</h4>
+    <span style="flex: 1 1 auto;"></span>
+    <button mat-flat-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Choose</button>
+    <button mat-flat-button color="warn" (click)="onClose()">Cancel</button>
+  </div>
+</mat-dialog-actions>

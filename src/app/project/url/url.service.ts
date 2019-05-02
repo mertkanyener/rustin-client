@@ -10,7 +10,7 @@ export class UrlService {
 
 
     setUrls(urls: UrlClass[]) {
-        this.urls = urls;
+        this.urls = urls.reverse();
         this.urlsChanged.next(this.urls.slice());
     }
 

@@ -17,6 +17,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { FooterComponent } from './footer/footer.component';
 import { ProjectService } from './project/project.service';
 import { UrlService } from './project/url/url.service';
+import { ErrorComponent } from './shared/error/error.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { UrlService } from './project/url/url.service';
     LoginComponent,
     RegisterComponent,
     SidebarComponent,
-    FooterComponent
+    FooterComponent,
+    ErrorComponent,
   ],
   imports: [
     BrowserModule, 
@@ -41,6 +43,7 @@ import { UrlService } from './project/url/url.service';
     
   ],
   providers: [MainService, ProjectService, UrlService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ErrorComponent]
 })
 export class AppModule { }

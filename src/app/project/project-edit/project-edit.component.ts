@@ -33,7 +33,10 @@ export class ProjectEditComponent implements OnInit {
     this.route.params.subscribe(
       (params: Params) => {
         this.id = +params['id'];
-        this.editMode = params['id'] != null;
+        if (params['id'] != null) {
+          this.editMode = true;
+          this.project = this.projectService.getProject(this.id);
+        }
         this.initForm();
       }
     );
@@ -91,10 +94,20 @@ export class ProjectEditComponent implements OnInit {
 
   projectNameValidator(c: AbstractControl): Promise<ValidationErrors> | Observable<ValidationErrors>{
     let promise = new Promise<any>((resolve, reject) => {
-      if (this.projectService.getProjects().find(x => x.name === c.value) != null){
-        resolve({'projectExists': true});
-      }else{
-        resolve(null);
+      if (this.editMode) {
+        console.log("project: ", this.project.name);
+        if (this.projectService.getProjects().find(x => x.name === c.value) != null
+        && this.project.name != c.value  ){
+          resolve({'projectExists': true});
+        }else{
+          resolve(null);
+        }
+        } else {
+            if (this.projectService.getProjects().find(x => x.name === c.value) != null) {
+              resolve({'projectExists': true});
+            } else {
+              resolve(null);
+        }
       }
     });
     return promise;

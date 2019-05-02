@@ -7,13 +7,22 @@ import {Router} from '@angular/router';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit{
+
+  username: string;
 
   constructor(private mainService: MainService,
               private router: Router) { }
 
+
+  ngOnInit(){
+    if (this.mainService.isAuthenticated()) {
+      this.username = localStorage.getItem('username');
+    }
+  }
+
   onProjectList(){
-    this.mainService.getAllProjects();
+    this.mainService.showLoadingSpinner();
     this.router.navigate(['/projects']);
   }
 }

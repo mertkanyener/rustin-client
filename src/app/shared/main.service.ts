@@ -8,6 +8,8 @@ import { Project } from "./project.model";
 import { UrlService } from "../project/url/url.service";
 import { UrlClass } from "./url.model";
 import { Subject } from 'rxjs';
+import {MatDialog} from '@angular/material';
+import {ErrorComponent} from './error/error.component';
 
 export interface Token {
     access_token: string;
@@ -18,20 +20,33 @@ export interface Token {
     userId: number;
 }
 
+
+
 @Injectable()
 export class MainService {
     status = new Subject<number>();
+    response = new Subject<HttpResponse<any>>();
     showSpinner : boolean = false;
-    private token: Token = null;
-    private username: string;
     private httpOptions : any;
+
+    private path = 'http://localhost:8080/resources/';
+    private publicPath = 'http://localhost:8080/';
+
+    // private path = 'http://10.65.128.174:18080/restin-server/resources/';
+    // private publicPath = 'http://10.65.128.174:18080/restin-server/';
+
     constructor(private httpClient: HttpClient,
                 private router: Router,
                 private projectService: ProjectService, 
-                private urlService: UrlService) {}
+                private urlService: UrlService,
+                public dialog: MatDialog) {}
+
+    getPath(){
+      return this.path;
+    }
 
     registerUser(user: User){
-        const url = "http://localhost:8080/register";
+        const url = this.publicPath + "register";
         return this.httpClient.post<User>(url, user);
     }
     
@@ -42,7 +57,7 @@ export class MainService {
         const clientSecret = 'mertsecret';
         const headers = new HttpHeaders().set("Content-type","application/x-www-form-urlencoded").append("Accept","application/json");
         const params = new HttpParams().set("client_id",clientId).append("client_secret",clientSecret).append("grant_type","password").append("username",username).append("password",password);
-        const req = new HttpRequest("POST","http://localhost:8080/oauth/token", null , { headers: headers, params: params, responseType: 'text'});
+        const req = new HttpRequest("POST",this.publicPath + "oauth/token", null , { headers: headers, params: params, responseType: 'text'});
         this.httpClient.request(req).pipe(map(
             (response : HttpResponse<any>) => {
                 status = response.status;
@@ -52,53 +67,47 @@ export class MainService {
             }
          )).subscribe(
              (token) => {
-                if (status === 200) {
-                    this.hideLoadingSpinner();
-                    this.setToken(token);
-                    this.username = username;
-                    this.init();
-                    this.router.navigate(['']);
-
+                console.log("token: ", token);
+                this.hideLoadingSpinner();
+                localStorage.setItem('username', username);
+                try {
+                  this.setToken(token);
+                  this.init();
+                  this.router.navigate(['']);
+                }catch (e) {
+                  console.log("Token not defined yet: ", e);
                 }
+
              },
              (error) => {
                 this.hideLoadingSpinner();
                 console.log("STATUS: ", error.status);
                 this.status.next(error.status);
-                this.token = null;
                 this.router.navigate(['login']);
                 console.log("ERROR: " , error);
-            },
-          () => {
-            console.log("First Token: ",this.token.access_token);
-            console.log("1. Refresh token: ", this.token.refresh_token)
-          }
+            }
         );
     }
 
   refreshToken(){
-    let path = "http://localhost:8080/oauth/token";
     const headers = new HttpHeaders().set("Content-type","application/x-www-form-urlencoded").append("Accept","application/json");
-    const params = new HttpParams().set("client_id","mert").append("client_secret","mertsecret").append("grant_type","refresh_token").append("refresh_token", this.token.refresh_token);
-    console.log("Refresh token: ", this.token.refresh_token);
-    this.httpClient.post(path, null ,{headers: headers , params:params}).pipe(map(
+    const params = new HttpParams().set("client_id","mert").append("client_secret","mertsecret").append("grant_type","refresh_token").append("refresh_token", localStorage.getItem('refresh_token'));
+    this.httpClient.post(this.publicPath + 'oauth/token', null ,{headers: headers , params:params}).pipe(map(
       (response) => {
-        console.log("Refreshtoken response: ", response);
-        //let body = response['body'];
-        //let token : Token = JSON.parse(body || '{}');
         return response;
       }
     )).subscribe(
       (token : Token) => {
-        console.log("After successful refresh: ", token);
-        this.setToken(token);
+        localStorage.setItem('access_token', token.access_token);
         this.init();
       },
       (err) => {
+        if (err.error.error_description === 'Invalid refresh token: '+ localStorage.getItem('refresh_token')) {
+          this.logout();
+          alert('Your session has expired. Please login again.');
+          this.router.navigate(['']);
+        }
         console.log("ERROR: ", err);
-      },
-      () => {
-        console.log("Refreshed token: ", this.token.access_token);
       }
     );
   }
@@ -106,15 +115,15 @@ export class MainService {
     init() {
         this.httpOptions = {
             headers: new HttpHeaders(
-                {'Authorization': 'Bearer ' + this.token.access_token,
-                 'UserId':this.token.userId.toString()})
+                {'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                 'UserId':localStorage.getItem('userId')})
         };
     }
 
     logout(){
-        let path = "http://localhost:8080/oauth/revoke-token";
+        let path = this.publicPath + "oauth/revoke-token";
         let projects: Project[] = [];
-        let headers = new HttpHeaders({'Authorization': 'Bearer '+this.token.access_token});
+        let headers = new HttpHeaders({'Authorization': 'Bearer '+localStorage.getItem('access_token')});
         this.projectService.setProjects(projects);
         this.httpClient.get(path, {headers: headers}).subscribe(
           (res) => {
@@ -124,22 +133,28 @@ export class MainService {
             console.log("ERROR: ", err);
           }
         );
-        this.token = null;
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('username');
         this.router.navigate(['']);
+    }
+
+    getOptions() {
+      return this.httpOptions;
     }
 
 
 
     isAuthenticated() {
-        return this.token != null;
+
+      return localStorage.getItem('access_token') != 'undefined' && localStorage.getItem('access_token') != null;
     }
 
     setToken(token: Token) {
-        this.token = token;
-    }
-
-    getToken() {
-        return this.token;
+        localStorage.setItem('access_token', token.access_token);
+        localStorage.setItem('refresh_token', token.refresh_token);
+        localStorage.setItem('userId', token.userId.toString());
     }
 
     showLoadingSpinner() {
@@ -154,18 +169,21 @@ export class MainService {
 
     getAllProjects() {
         this.showLoadingSpinner();
-        this.httpClient.get<Project[]>('http://localhost:8080/resources/projects', this.httpOptions).subscribe(
+        let token  = localStorage.getItem('access_token');
+        this.httpClient.get<Project[]>(this.path + 'projects', this.httpOptions).subscribe(
             (projects: any) => {
                 this.projectService.setProjects(projects);
                 this.hideLoadingSpinner();
             },
-            (error) => {
+            (error: any) => {
+              console.log(error);
               this.hideLoadingSpinner();
-              let errMsg = 'Access token expired: ' + this.token.access_token;
+              let errMsg = 'Access token expired: ' + token;
                 if (error.error.error_description === errMsg){
                   this.refreshToken();
                   retry(1);
-                } else {
+                } else if (error.error.error_description === 'Invalid access token: ' + token) {
+                  this.logout();
                   console.log("ERROR: ", error);
                 }
             }
@@ -173,13 +191,12 @@ export class MainService {
     }
 
     getProjectMaxId() {
-        let path = 'http://localhost:8080/resources/projects/maxId';
-        this.httpClient.get<number>(path, this.httpOptions).subscribe(
+        this.httpClient.get<number>(this.path + 'projects/maxId', this.httpOptions).subscribe(
             (maxId: any ) => {
                 this.projectService.setMaxId(maxId);
             },
             (error) => {
-              let errMsg = 'Access token expired: ' + this.token.access_token;
+              let errMsg = 'Access token expired: ' + localStorage.getItem('access_token');
               if (error.error.error_description === errMsg){
                 this.refreshToken();
                 retry(1);
@@ -187,18 +204,18 @@ export class MainService {
                 console.log("ERROR: ", error);
               }
             }
-        )
+        );
     }
 
     addNewProject(project: Project) {
-        project.userId = this.token.userId;
+        project.userId = +localStorage.getItem('userId');
         console.log(project);
-        this.httpClient.post('http://localhost:8080/resources/projects', project, this.httpOptions).subscribe(
+        this.httpClient.post(this.path +  'projects', project, this.httpOptions).subscribe(
             (res) => {
                 this.projectService.addProject(project);
             },
             (error) => {
-              let errMsg = 'Access token expired: ' + this.token.access_token;
+              let errMsg = 'Access token expired: ' + localStorage.getItem('access_token');
               if (error.error.error_description === errMsg){
                 this.refreshToken();
                 retry(1);
@@ -210,14 +227,13 @@ export class MainService {
     }
 
     updateProject(id: number, project: Project) {
-        project.userId = this.token.userId;
-        let path = 'http://localhost:8080/resources/projects/' + id;
-        this.httpClient.put(path, project, this.httpOptions).subscribe(
+        project.userId = +localStorage.getItem('userId');
+        this.httpClient.put(this.path + 'projects/' + id , project, this.httpOptions).subscribe(
             (res) => {
                 this.projectService.updateProject(id, project);    
             },
             (error) => {
-              let errMsg = 'Access token expired: ' + this.token.access_token;
+              let errMsg = 'Access token expired: ' + localStorage.getItem('access_token');
               if (error.error.error_description === errMsg){
                 this.refreshToken();
                 retry(1);
@@ -229,13 +245,12 @@ export class MainService {
     }
 
     deleteProject(id: number) {
-        let path = 'http://localhost:8080/resources/projects/' + id;
-        this.httpClient.delete(path, this.httpOptions).subscribe(
+        this.httpClient.delete(this.path + 'projects/' + id, this.httpOptions).subscribe(
             (res) => {
                 this.projectService.deleteProject(id);
             },
             (error) => {
-              let errMsg = 'Access token expired: ' + this.token.access_token;
+              let errMsg = 'Access token expired: ' + localStorage.getItem('access_token');
               if (error.error.error_description === errMsg){
                 this.refreshToken();
                 retry(1);
@@ -248,13 +263,12 @@ export class MainService {
     // "URL" Methods
 
     getUrlMaxId() {
-        let path = 'http://localhost:8080/resources/urls/maxId';
-        this.httpClient.get<number>(path, this.httpOptions).subscribe(
+        this.httpClient.get<number>(this.path + 'urls/maxId', this.httpOptions).subscribe(
             (maxId : any) => {
                 this.urlService.setMaxId(maxId);
             },
             (error) => {
-              let errMsg = 'Access token expired: ' + this.token.access_token;
+              let errMsg = 'Access token expired: ' + localStorage.getItem('access_token');
               if (error.error.error_description === errMsg){
                 this.refreshToken();
                 retry(1);
@@ -266,7 +280,7 @@ export class MainService {
 
     getAllUrls(projectId: number) {
         this.showLoadingSpinner();
-        let path = 'http://localhost:8080/resources/projects/' + projectId + "/urls";
+        let path = this.path + 'projects/' + projectId + "/urls";
         this.httpClient.get<UrlClass[]>(path, this.httpOptions).subscribe(
             (urls: any) => {
                 this.urlService.setUrls(urls);
@@ -274,7 +288,7 @@ export class MainService {
             },
             (error) => {
               this.hideLoadingSpinner();
-              let errMsg = 'Access token expired: ' + this.token.access_token;
+              let errMsg = 'Access token expired: ' + localStorage.getItem('access_token');
               if (error.error.error_description === errMsg){
                 this.refreshToken();
                 retry(1);
@@ -287,13 +301,13 @@ export class MainService {
 
     addNewUrl(projectId: number, url: UrlClass) {
         console.log(url);
-        let path = 'http://localhost:8080/resources/projects/' + projectId + "/urls";
+        let path = this.path + 'projects/' + projectId + "/urls";
         this.httpClient.post(path, url, this.httpOptions).subscribe(
             (res) => {
                 this.urlService.addUrl(url);
             },
             (error) => {
-              let errMsg = 'Access token expired: ' + this.token.access_token;
+              let errMsg = 'Access token expired: ' + localStorage.getItem('access_token');
               if (error.error.error_description === errMsg){
                 this.refreshToken();
                 retry(1);
@@ -305,13 +319,13 @@ export class MainService {
     }
 
     updateUrl(projectId: number, id: number, url: UrlClass) {
-        let path = 'http://localhost:8080/resources/projects/' + projectId + "/urls/" + id;
+        let path = this.path +  'projects/' + projectId + "/urls/" + id;
         this.httpClient.put(path, url, this.httpOptions).subscribe(
             (res) => {
                 this.urlService.updateUrl(id, url);
             },
             (error) => {
-              let errMsg = 'Access token expired: ' + this.token.access_token;
+              let errMsg = 'Access token expired: ' + localStorage.getItem('access_token');
               if (error.error.error_description === errMsg){
                 this.refreshToken();
                 retry(1);
@@ -322,13 +336,13 @@ export class MainService {
     }
 
     deleteUrl(projectId: number, id: number) {
-        let path = 'http://localhost:8080/resources/projects/' + projectId + "/urls/" + id;
+        let path = this.path + 'projects/' + projectId + "/urls/" + id;
         this.httpClient.delete(path, this.httpOptions).subscribe(
             (res) => {
                 this.urlService.deleteUrl(id);
             },
             (error) => {
-              let errMsg = 'Access token expired: ' + this.token.access_token;
+              let errMsg = 'Access token expired: ' + localStorage.getItem('access_token');
               if (error.error.error_description === errMsg){
                 this.refreshToken();
                 retry(1);
@@ -339,10 +353,77 @@ export class MainService {
         )
     }
 
+    sendRequest(path: string, method: string , statusCode: number, contentType: string) {
+      this.showLoadingSpinner();
+      let req : HttpRequest<any>;
+      const headers = new HttpHeaders(
+          {
+            'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+            'UserId': localStorage.getItem('userId'),
+            'Code': statusCode.toString(),
+            'Content-Type': contentType
+          });
+      let options : {
+        headers?: HttpHeaders,
+        observe?: 'body',
+        params?: HttpParams,
+        reportProgress?: boolean,
+        responseType : 'text'
+        withCredentials?: boolean
+      } = {
+        headers: headers,
+        responseType : 'text'
+      };
+      switch (method) {
+        case "GET":
+          req = new HttpRequest("GET", path, options);
+          break;
+        case "POST":
+          // @ts-ignore
+          req = new HttpRequest("POST", path, null, options);
+          break;
+        case "PUT":
+          req = new HttpRequest("PUT", path, null, options);
+          break;
+        case "DELETE":
+          req = new HttpRequest("DELETE", path, options);
+          break;
+        case "OPTIONS":
+          req = new HttpRequest("OPTIONS", path, options);
+          break;
+        case "HEAD":
+          req = new HttpRequest("HEAD", path, options);
+          break;
+        case "PATCH":
+          req = new HttpRequest("PATCH", path, null, options);
+          break;
+      }
+      this.httpClient.request(req).subscribe(
+        (res: HttpResponse<any>) => {
+          this.hideLoadingSpinner();
+          console.log("Response: ", res);
+          console.log("Body: ", res.body);
+          this.response.next(res);
+        },
+        (error) => {
+          this.hideLoadingSpinner();
+          let errMsg = 'Access token expired: ' + localStorage.getItem('access_token');
+          if (error.error.error_description === errMsg){
+            this.refreshToken();
+            retry(1);
+          } else if (error.status === 404 || error.status === 500) {
+            this.dialog.open(ErrorComponent);
+            console.log("ERROR: ", error);
+
+          }
+        }
+      );
+    }
+
     // Async validation
 
     isUsernameExists(username: string): Promise<any> {
-        let path = 'http://localhost:8080/validation/username/' + username;
+        let path = this.publicPath + 'validation/username/' + username;
         let promise = new Promise<any>((resolve, reject) => {
             this.httpClient.get<number>(path).toPromise().then(
                 res => {
@@ -358,7 +439,7 @@ export class MainService {
     }
     
     isEmailExists(email: string) : Promise<any> {
-        let path = 'http://localhost:8080/validation/email/' + email;
+        let path = this.publicPath + 'validation/email/' + email;
         let promise = new Promise<any>((resolve, reject) => {
             this.httpClient.get<number>(path).toPromise().then(
                 res => {

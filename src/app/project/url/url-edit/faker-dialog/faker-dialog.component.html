@@ -29,6 +29,6 @@
     <h4 class="mat-h4">Your selection: <b>{{ data.choice }}</b></h4>
     <span style="flex: 1 1 auto;"></span>
     <button mat-flat-button color="primary" [mat-dialog-close]="data.choice" cdkFocusInitial>Ok</button>
-    <button mat-flat-button color="warn" mat-dialog-close>Cancel</button>
+    <button mat-flat-button color="warn" (click)="onClose()">Cancel</button>
   </div>
 </mat-dialog-actions>

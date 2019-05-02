@@ -1,8 +1,24 @@
-<h1 mat-dialog-title>JSON Not Valid!</h1>
-<mat-dialog-content fxLayout="column" class="mat-typography">
-    Insert dynamic response annotations after defining the field name. <b>E.g. "firstName" : "$name.firstname"</b>
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>OK</button>
-</mat-dialog-actions>
+<div class="container" *ngIf="data.error === 'invalid';else elseBlock">
+  <h1 mat-dialog-title>JSON Not Valid!</h1>
+  <mat-dialog-content fxLayout="column" class="mat-typography">
+    <b>Please enter a valid JSON.</b>
+    <br>
+    * For dynamic responses; insert dynamic response annotations after defining the field name. <b>E.g. "firstName" : "$name.firstname"</b>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>OK</button>
+  </mat-dialog-actions>
+</div>
+<ng-template #elseBlock>
+  <h1 mat-dialog-title>Response Can't Be Null!</h1>
+  <mat-dialog-content fxLayout="column" class="mat-typography">
+    Response field can't be empty. Please enter a valid JSON.
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>OK</button>
+  </mat-dialog-actions>
+</ng-template>
+
+
+
 

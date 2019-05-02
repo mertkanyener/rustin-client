@@ -11,3 +11,6 @@ mat-form-field {
   margin-right: 2rem;
 }
 
+a {
+  text-decoration: none;
+}

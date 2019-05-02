@@ -39,23 +39,15 @@
               </mat-select>
               <mat-error *ngIf="urlForm.hasError('required', 'responseCode')">* Response Code is required.</mat-error>
             </mat-form-field>
-            <mat-form-field>
-              <mat-select
-                placeholder="Select Response Type"
-                id="contentType"
-                formControlName="contentType">
-                <mat-option *ngFor="let type of types" [value]="type">
-                  {{ type }}
-                </mat-option>
-              </mat-select>
-              <mat-error *ngIf="urlForm.hasError('required', 'contentType')">* Response type is required.</mat-error>
-            </mat-form-field>
             <mat-slide-toggle
-              [(ngModel)]="checked" [ngModelOptions]="{standalone: true}" fxFlexAlign="center">
-              {{ checked ? 'Dynamic Response' : 'Static Response' }}
+              [(ngModel)]="checkedDynamic" [ngModelOptions]="{standalone: true}" fxFlexAlign="center">
+              {{ checkedDynamic ? 'Dynamic Response' : 'Static Response' }}
+            </mat-slide-toggle>
+            <mat-slide-toggle [(ngModel)]="checkedMirror" [ngModelOptions]="{standalone: true}" fxFlexAlign="center">
+              {{ 'Mirrored Response' }}
             </mat-slide-toggle>
       </div>
-      <h4 class="mat-h4" *ngIf="checked">*Press F3 to choose the value to be dynamically generated. It will be placed in the position of the editor caret.</h4>
+      <h4 class="mat-h4" *ngIf="checkedDynamic">*Press F3 to choose the value to be dynamically generated. It will be placed in the position of the editor caret.</h4>
     </div>
     <br>
     <div *ngIf="editMode; then thenBlock else elseBlock"></div>

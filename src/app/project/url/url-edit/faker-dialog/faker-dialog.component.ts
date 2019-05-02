@@ -98,4 +98,8 @@ export class FakerDialogComponent implements OnInit {
     this.data.choice = this.result;
   }
 
+  onClose(){
+    this.dialogRef.close(false);
+  }
+
 }

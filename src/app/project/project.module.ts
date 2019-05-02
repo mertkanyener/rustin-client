@@ -19,6 +19,10 @@ import { TextInputAutocompleteModule } from 'angular-text-input-autocomplete';
 import { FakerDialogComponent } from './url/url-edit/faker-dialog/faker-dialog.component';
 import { ProjectStartComponent } from './project-start/project-start.component';
 import { ErrorDialogComponent } from './url/url-edit/error-dialog/error-dialog.component';
+import { RequestComponent } from './request/request.component';
+import {AceEditorModule} from 'ng2-ace-editor';
+import { AskDialogComponent } from './url/url-list/ask-dialog/ask-dialog.component';
+import { PathfinderComponent } from './request/pathfinder/pathfinder.component';
 
 @NgModule({
     declarations: [
@@ -33,7 +37,10 @@ import { ErrorDialogComponent } from './url/url-edit/error-dialog/error-dialog.c
         UrlListComponent,
         FakerDialogComponent,
         ProjectStartComponent,
-        ErrorDialogComponent
+        ErrorDialogComponent,
+        RequestComponent,
+        AskDialogComponent,
+        PathfinderComponent
     ],
     imports: [
         CommonModule,
@@ -44,9 +51,10 @@ import { ErrorDialogComponent } from './url/url-edit/error-dialog/error-dialog.c
         ProjectRoutingModule,
         NgJsonEditorModule,
         NgxJsonViewerModule,
-        TextInputAutocompleteModule
+        TextInputAutocompleteModule,
+        AceEditorModule
     ],
-    entryComponents: [FakerDialogComponent,ErrorDialogComponent]
+    entryComponents: [FakerDialogComponent,ErrorDialogComponent,AskDialogComponent, PathfinderComponent]
 })
 
 export class ProjectModule {

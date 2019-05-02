@@ -33,7 +33,7 @@ export class ProjectService {
         this.projectsChanged.next(this.projects.slice());
     }
 
-    getProjects() {
+    getProjects() : Project[] {
         return this.projects;
     }
 
@@ -52,6 +52,10 @@ export class ProjectService {
         newProject.id = id;
         this.projects[index] = newProject;
         this.projectsChanged.next(this.projects.slice());
+    }
+
+    getActiveProjects(): Project[] {
+      return this.projects.filter(x => x.status.toLowerCase() === 'active');
     }
 
     

@@ -1,5 +1,5 @@
 {
-  "name": "project-client",
+  "name": "restin-client",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -30,6 +30,7 @@
     "font-awesome": "^4.7.0",
     "hammerjs": "^2.0.8",
     "jsoneditor": "^5.24.6",
+    "ng2-ace-editor": "^0.3.8",
     "ngx-json-viewer": "^2.3.1",
     "ngx-quill-editor": "^2.2.2",
     "npm": "^6.4.1",

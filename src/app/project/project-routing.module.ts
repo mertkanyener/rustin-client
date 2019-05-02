@@ -7,11 +7,13 @@ import { ProjectDetailComponent } from "./project-detail/project-detail.componen
 import { UrlListComponent } from "./url/url-list/url-list.component";
 import { UrlDetailComponent } from "./url/url-detail/url-detail.component";
 import { UrlEditComponent } from "./url/url-edit/url-edit.component";
+import {RequestComponent} from './request/request.component';
 
 
 const projectRoutes : Routes = [
     { path: '', component: ProjectComponent, children: [
         { path: '', component: ProjectListComponent },
+        { path: 'request', component: RequestComponent },
         { path: 'new', component: ProjectEditComponent },
         { path: ':id', component: ProjectDetailComponent },
         { path: ':id/edit', component: ProjectEditComponent},
@@ -19,7 +21,8 @@ const projectRoutes : Routes = [
         { path: ':projectId/urls/new', component: UrlEditComponent, pathMatch: 'full' },
         { path: ':projectId/urls/:urlId', component: UrlDetailComponent, pathMatch: 'full' },
         { path: ':projectId/urls/:urlId/edit', component: UrlEditComponent }
-    ] }
+    ] },
+
 ];
 
 @NgModule({

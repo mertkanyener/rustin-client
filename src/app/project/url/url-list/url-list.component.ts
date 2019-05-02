@@ -1,10 +1,11 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import {Component, OnInit, OnDestroy, Input, ViewChild} from '@angular/core';
 import { UrlClass } from '../../../shared/url.model';
 import { Subscription } from 'rxjs';
 import { UrlService } from '../url.service';
 import { ActivatedRoute, Params } from '@angular/router';
 import { MainService } from 'src/app/shared/main.service';
-import {MatTableDataSource} from '@angular/material';
+import {MatDialog, MatSort, MatTableDataSource} from '@angular/material';
+import {AskDialogComponent} from "./ask-dialog/ask-dialog.component";
 
 @Component({
   selector: 'app-url-list',
@@ -18,10 +19,12 @@ export class UrlListComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   projectId: number;
   displayedColumns: string[] = ['path', 'method', 'code' , 'edit', 'delete'];
+  @ViewChild(MatSort) sort : MatSort;
 
   constructor(private urlService: UrlService,
               private mainService: MainService,
-              private route: ActivatedRoute) { }
+              private route: ActivatedRoute,
+              public dialog: MatDialog) { }
 
   ngOnInit() {
     this.route.params.subscribe(
@@ -33,6 +36,7 @@ export class UrlListComponent implements OnInit, OnDestroy {
       (urls: UrlClass[]) => {
         this.urls = urls;
         this.dataSource.data = this.urls;
+        this.dataSource.sort = this.sort;
       }
     );
     this.urls = this.urlService.getUrls();
@@ -45,6 +49,16 @@ export class UrlListComponent implements OnInit, OnDestroy {
   }
 
   onDelete(id: number) {
+    const dialogRef = this.dialog.open(AskDialogComponent);
+
+    dialogRef.afterClosed().subscribe(deleteUrl => {
+      if (deleteUrl) {
+        this.delete(id);
+      }
+    })
+  }
+
+  delete(id: number) {
     this.mainService.deleteUrl(this.projectId, id);
   }
 

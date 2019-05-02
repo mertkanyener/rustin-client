@@ -1,0 +1,66 @@
+<div class="container" fxLayout="column">
+  <h1 class="mat-h1">Send Request</h1>
+  <mat-divider></mat-divider>
+  <form [formGroup]="requestForm" (ngSubmit)="onSubmit()" fxFill>
+    <div class="container-form">
+      <button mat-raised-button color="primary" type="button"(click)="onChoose()" >Choose Path</button>
+    </div>
+    <div class="container-form" fxLayout="row" fxLayoutGap="15px">
+      <mat-form-field fxFlex="50">
+        <input
+          type="text"
+          matInput
+          formControlName="path"
+          placeholder="Full URL Path"
+          class="form-control">
+        <mat-error *ngIf="requestForm.hasError('required', 'path')">* Please enter a request path.</mat-error>
+      </mat-form-field>
+      <mat-form-field fxFlex="12">
+        <mat-select
+          placeholder="Select Method"
+          formControlName="method"
+          [ngModel]="method">
+          <mat-option *ngFor="let method of methods" [value]="method">{{ method }}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="requestForm.hasError('required', 'method')">* Please select the request method.</mat-error>
+      </mat-form-field>
+      <mat-form-field fxFlex="12">
+        <mat-select
+          placeholder="Select Status Code"
+          formControlName="code">
+          <mat-option *ngFor="let code of statusCodes" [value]="code">{{ code }}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="requestForm.hasError('required', 'code')">* Please select the expected response code.</mat-error>
+      </mat-form-field>
+      <mat-form-field fxFlex="12">
+        <mat-select
+          placeholder="Select Content Type"
+          formControlName="contentType">
+          <mat-option *ngFor="let type of types" [value]="type">{{ type }}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="requestForm.hasError('required', 'contentType')">* Please select the content type.</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="button-row" fxLayout="row" fxLayoutGap="15px">
+      <span fxFlex="50" class="mat-typography">*Add "/resources" to URL after "/restin-server". Ex: "http://restin-server/resources/memberbook/members/1"</span>
+      <button fxFlex="12" mat-raised-button color="primary" type="submit" [disabled]="!requestForm.valid">Send Request</button>
+      <button fxFlex="12" mat-raised-button color="accent" type="button" (click)="onClear()">Clear</button>
+      <button fxFlex="12" mat-raised-button color="warn" routerLink="/projects">Cancel</button>
+    </div>
+  </form>
+  <mat-divider></mat-divider>
+  <div fxFlexAlign="center" *ngIf="mainService.showSpinner;else editorBlock">
+    <mat-spinner></mat-spinner>
+  </div>
+  <ng-template #editorBlock>
+    <div class="container" fxLayout="row">
+      <h3 class="mat-h3"><b></b></h3>
+    </div>
+    <div class="container" fxLayout="row">
+      <span fxFlex="10"><h3 class="mat-h3"><b>Response:</b></h3></span>
+      <textarea fxFlex="60" readonly name="response" id="response" cols="10" rows="40">{{ response }}</textarea>
+      <span fxFlex="30"></span>
+    </div>
+    <!--<ngx-json-viewer [json]="response"></ngx-json-viewer>-->
+  </ng-template>
+</div>

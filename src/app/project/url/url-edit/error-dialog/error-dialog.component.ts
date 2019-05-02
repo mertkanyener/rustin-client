@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Inject} from '@angular/core';
+import {MAT_DIALOG_DATA} from "@angular/material";
+
+export interface DialogData {
+  error : 'null' | 'invalid';
+}
 
 @Component({
   selector: 'app-error-dialog',
-  templateUrl: './error-dialog.component.html',
-  styleUrls: ['./error-dialog.component.css']
+  templateUrl: './error-dialog.component.html'
 })
-export class ErrorDialogComponent implements OnInit {
+export class ErrorDialogComponent {
 
-  constructor() { }
-
-  ngOnInit() {
-  }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
 }

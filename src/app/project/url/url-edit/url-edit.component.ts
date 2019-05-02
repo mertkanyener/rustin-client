@@ -22,7 +22,6 @@ export class UrlEditComponent implements OnInit {
                        "LINK", "UNLINK", "PURGE", "LOCK", "UNLOCK", "PROPFIND", "VIEW" ];
   responseCodes: number[] = [200, 400, 401, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413,
                              414, 415, 416, 417, 418, 426, 428, 429, 431, 451, 500, 501, 502, 503]
-  types: string[] = ["application/json", "application/xml", "text/plain"];
   urlForm: FormGroup;
   id: number;
   maxId: number;
@@ -32,7 +31,8 @@ export class UrlEditComponent implements OnInit {
   jsonData = null;
   choice: string;
   editorText: string;
-  checked = false;
+  checkedDynamic = false;
+  checkedMirror = false;
   
 
   constructor(private route: ActivatedRoute,
@@ -56,7 +56,7 @@ export class UrlEditComponent implements OnInit {
         this.editMode = params['urlId'] != null;
         this.initForm();
       }
-    )
+    );
     this.urlService.maxIdChanged.subscribe(
       (maxId) => {
         this.maxId = maxId;
@@ -70,9 +70,11 @@ export class UrlEditComponent implements OnInit {
   private initForm() {
     let urlPath = '';
     let urlMethod = '';
-    let urlResponse = '';
-    let contentType = '';
+    let urlResponse = '\n';
     let responseCode = null;
+
+    let pattern = '(\\{([a-zA-Z]+)\\})|([a-zA-Z0-9]+)(/\\{([a-zA-Z])+\\})*(/[a-zA-Z0-9]*)*';
+    // '\\{*[a-zA-Z0-9]*\\}*(/{*[a-zA-Z0-9]*}*)*'
   
     if (this.editMode) {
       const urlOld = this.urlService.getUrls().find(x => x.id === this.id);
@@ -80,47 +82,75 @@ export class UrlEditComponent implements OnInit {
       urlMethod = urlOld.method;
       urlResponse = urlOld.response;
       responseCode = urlOld.responseCode;
-      contentType = urlOld.contentType;
       if (urlOld.isDynamic === 1){
-        this.checked = true;
+        this.checkedDynamic = true;
       }
-      console.log("response: ", urlOld.response);
+      if (urlOld.isMirrored == 1){
+        this.checkedMirror = true;
+      }
+      console.log("URL: ", urlOld);
       this.jsonData = JSON.parse(urlOld.response);
+    } else {
+      this.jsonData = '\n';
     }
     this.urlForm = new FormGroup({
-      'path' : new FormControl(urlPath, [Validators.required, Validators.pattern('[a-zA-Z0-9/]*')]),
+      'path' : new FormControl(urlPath, [Validators.required, Validators.pattern(pattern)]),
       'method' : new FormControl(urlMethod, [Validators.required]),
       'response' : new FormControl(urlResponse),
-      'responseCode': new FormControl(responseCode, [Validators.required]),
-      'contentType': new FormControl(contentType, [Validators.required])
+      'responseCode': new FormControl(responseCode, [Validators.required])
     });
-
   }
   
   onSave() {
     const formValue = this.urlForm.value;
     this.url.path = formValue.path;
     this.url.method = formValue.method;
-    this.url.contentType = formValue.contentType;
-    this.url.response = JSON.stringify(this.jsonEditor.get());
+    let response = '';
+    try {
+      response = JSON.stringify(this.jsonEditor.get());
+      if (response.replace(/ /g, '') === '{}'){
+        this.dialog.open(ErrorDialogComponent, {
+          data: {
+            error: 'null'
+          }
+        });
+        return;
+      }
+      this.url.response = response;
+    } catch (e) {
+      this.dialog.open(ErrorDialogComponent, {
+        data: {
+          error: 'invalid'
+        }
+      });
+      console.log("ERROR: ", e);
+      return;
+    }
     this.url.responseCode = formValue.responseCode;
-    if (this.checked) {
+    if (this.checkedDynamic) {
       this.url.isDynamic = 1;
     } else {
       this.url.isDynamic = 0;
     }
+    if (this.checkedMirror) {
+      this.url.isMirrored = 1;
+    } else {
+      this.url.isMirrored = 0;
+    }
     if (this.editMode) {
       this.mainService.updateUrl(this.projectId, this.id, this.url);
+      console.log("url: ", this.url);
       this.router.navigate(['../../../'], {relativeTo: this.route});
     } else {
       this.url.id = this.maxId + 1;
       this.mainService.addNewUrl(this.projectId, this.url);
+      console.log("url: ", this.url);
       this.router.navigate(['../../'], {relativeTo: this.route});
     }
   }
   
   onKey(event){
-    if (this.checked) {
+    if (this.checkedDynamic) {
       let row = this.jsonEditor.jsonEditorContainer.nativeElement.firstChild.children[3].children[1].innerHTML;
       if (event.key === "F3") {
         event.preventDefault();
@@ -128,36 +158,43 @@ export class UrlEditComponent implements OnInit {
           data: {choice: this.choice}
         });
         dialogRef.afterClosed().subscribe(result => {
-          this.choice = result;
-          this.editorText = this.jsonEditor.getText();
-          this.editorText = this.appendText(row, this.editorText, this.choice);
-          try {
-            const json = JSON.parse(this.editorText || '{}');
-            this.jsonEditor.set(json);
-          }
-          catch (e) {
-            this.dialog.open(ErrorDialogComponent);
-            console.log("ERROR: ", e);
+          if(result !== false) {
+            this.choice = result;
+            this.editorText = this.jsonEditor.getText();
+            this.editorText = this.appendText(row, this.editorText);
+            try {
+              const json = JSON.parse(this.editorText || '{}');
+              this.jsonEditor.set(json);
+            }
+            catch (e) {
+              this.dialog.open(ErrorDialogComponent, {
+                data: {
+                  error: 'invalid'
+                }
+              });
+              console.log("ERROR: ", e);
+            }
           }
         });
       }
     }    
   }
 
-  appendText(row: number, text: string, choice: string) {
+  appendText(row: number, text: string) {
     let result = '';
     let textArray = text.split('\n');
     let focusedRow = textArray[row - 1];
     if (focusedRow.includes(',')) {
       focusedRow = focusedRow.replace(',', '');
-      focusedRow = focusedRow.concat(' "$'+this.choice+'",');
+      focusedRow = focusedRow.concat(' "${'+this.choice+'}",');
     } else {
-      focusedRow = focusedRow.concat(' "$'+this.choice+'"');
+      focusedRow = focusedRow.concat(' "${'+this.choice+'}"');
     }
     textArray[row - 1] = focusedRow;
-    for (var i = 0; i < textArray.length; i++) {
+    for (let i = 0; i < textArray.length; i++) {
       result = result.concat(textArray[i] + '\n')
     }
+
     return result;
   }
 

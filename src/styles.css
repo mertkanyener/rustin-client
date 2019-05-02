@@ -1,1 +1,5 @@
 @import '~jsoneditor/dist/jsoneditor.min.css';
+
+mat-dialog-container {
+  overflow: hidden;
+}

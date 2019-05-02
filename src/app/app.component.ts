@@ -6,9 +6,20 @@ import { MainService } from './shared/main.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-  title = 'project-client';
+export class AppComponent implements OnInit{
 
-  constructor(private mainService: MainService) { 
+  title = 'Rest-in Client';
+
+  constructor(private mainService: MainService) {
+
   }
+
+  ngOnInit() {
+    console.log("token", localStorage.getItem('access_token'));
+    if (localStorage.getItem('access_token') != 'undefined') {
+      this.mainService.init();
+      console.log(this.mainService.getOptions());
+    }
+  }
+
 }
